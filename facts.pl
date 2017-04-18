@@ -13,5 +13,3 @@ peg(yellow).
 % The gamemasters feedback pegs
 feedbackpeg(black).
 feedbackpeg(white).
-
-solution(blue, red, yellow, green).
