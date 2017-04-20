@@ -1,9 +1,10 @@
 % Author: Andrew Jarombek
 % Date: 4/18/2017
 % Simulate the mastermind board game
+% Execute using ?- [mastermind, moves, facts].
 
-use_module(mastermindMoves).
-use_module(mastermindFacts).
+%use_module(mastermindMoves).
+%use_module(mastermindFacts).
 
 newgame(X) :- program(X).
 
@@ -17,7 +18,8 @@ program(start) :-
 	read(Z),
 	verifyinput(W, X, Y, Z),
 	write('Winning '), writeboard(W, X, Y, Z),
-	move(firstmove, []).
+	move(firstmove, PegList),
+	writeboard(PegList).
 
 % Verify that the user selects valid peg colors
 verifyinput(W, X, Y, Z) :-
@@ -41,3 +43,18 @@ writeboard(W, X, Y, Z) :-
 	write(X), write(', '),
 	write(Y), write(', '),
 	write(Z), write(']'), nl.
+
+% Print out the current board when given a list of the board
+writeboard(PegList) :-
+	write('Board: ['),
+	writepeg(PegList).
+
+% Print out a single peg at the end of the list
+writepeg([H|T]) :-
+	T = [],
+	write(H), write(']'), nl.
+
+% Print out a single peg in the middle of the list
+writepeg([H|T]) :-
+	write(H), write(', '),
+	writepeg(T).
