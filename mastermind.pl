@@ -19,7 +19,22 @@ program(start) :-
 	verifyinput(W, X, Y, Z),
 	write('Winning '), writeboard(W, X, Y, Z),
 	move(firstmove, PegList),
-	writeboard(PegList).
+	writeboard(PegList),
+	program(play, PegList).
+
+program(play, PegList) :-
+	write('Give Feedback:'), nl,
+	write('Black Pegs represent correct colors and correct positions.'), nl,
+	write('White Pegs represent correct color but incorrect position.'), nl,
+	nl, write('# of Black Pegs:'), nl,
+	read(Black),
+	nl, write('# of White Pegs:'), nl,
+	read(White),
+	feedback(Black, White, Score),
+	recordmove(PegList, Score, Black, White),
+	move(nmove, NewPegList),
+	writeboard(NewPegList),
+	program(play, NewPegList).
 
 % Verify that the user selects valid peg colors
 verifyinput(W, X, Y, Z) :-
