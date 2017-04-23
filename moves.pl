@@ -20,8 +20,8 @@ move(firstmove, PegList) :-
 move(nmove, PegList, Black, White, NewPegList) :-
 	random_permutation([1,2,3,4], Pegs),
 	write('Pegs: '), write(Pegs), nl,
-	BlackPegs = [], WhitePegs = [],
 	blackPegs(Pegs, Black, BlackPegs, RemainingPegs),
+	write('RemainingPegs: '), write(RemainingPegs), nl,
 	whitePegs(RemainingPegs, White, WhitePegs),
 	write('Black Pegs: '), write(BlackPegs), nl,
 	write('White Pegs: '), write(WhitePegs), nl,
@@ -85,24 +85,29 @@ bestMove(Score, PrevScore, _, PrevPegList, _, PrevBlack, _, PrevWhite, BestPegLi
 	BestWhite = PrevWhite.
 
 % Once all the black pegs have been chosen, return the unchosen pegs
-blackPegs(Pegs, Count, _, RemainingPegs) :-
+blackPegs(Pegs, Count, BlackPegs, RemainingPegs) :-
 	Count =< 0,
 	write('Black Pegs 0'), nl,
+	BlackPegs = [],
 	RemainingPegs = Pegs.
 
 % Get a list of the indexes that will follow the black peg feedback
-blackPegs([H|T], Count, BlackPegs, _) :-
+blackPegs([H|T], Count, BlackPegs, RemainingPegs) :-
 	write('Black Pegs N'), nl,
 	Count > 0,
-	append(BlackPegs, H, BP),
-	blackPegs(T, Count - 1, BP, _).
+	blackPegs(T, Count - 1, BP, RP),
+	append(BP, [H], BlackPegs),
+	RemainingPegs = RP.
+
+whitePegs([_|_], Count, WhitePegs) :-
+	Count =< 0,
+	write('White Pegs 0'), nl,
+	WhitePegs = [].
 
 % Get a list of the indexes that will follow the white peg feedback
 whitePegs([H|T], Count, WhitePegs) :-
+	write('White Pegs N'), nl,
 	Count > 0,
-	append(WhitePegs, H, WP),
-	whitePegs(T, Count - 1, WP).
-
-whitePegs([_|_], Count, _) :-
-	Count = 0.
+	whitePegs(T, Count - 1, WP),
+	append(WP, [H], WhitePegs).
 

@@ -16,13 +16,14 @@ program(start) :-
 	read(X),
 	read(Y),
 	read(Z),
-	verifyinput(W, X, Y, Z),
-	write('Winning '), writeboard(W, X, Y, Z), nl,
+	verifyinput(W, X, Y, Z), 
 	move(firstmove, PegList),
-	writeboard(PegList), nl,
-	program(play, PegList).
+	nl, writeboard(PegList),
+	write('Winning '), writeboard(W, X, Y, Z), nl,
+	program(play, PegList, [W, X, Y, Z]).
 
-program(play, PegList) :-
+% Make a move based on the first move and get feedback for the first time
+program(play, PegList, WinningBoard) :-
 	write('Give Feedback:'), nl,
 	write('Black Pegs represent correct colors and correct positions.'), nl,
 	write('White Pegs represent correct color but incorrect position.'), nl,
@@ -34,10 +35,12 @@ program(play, PegList) :-
 	write('The Score: '), write(Score), nl,
 	move(nmove, PegList, Black, White, NewPegList),
 	write('Move Made.'), nl,
-	writeboard(NewPegList),
-	program(play, NewPegList, PegList, Score, Black, White).
+	nl, writeboard(NewPegList),
+	write('Winning '), writeboard(WinningBoard), nl,
+	program(play, NewPegList, PegList, Score, Black, White, WinningBoard).
 
-program(play, PegList, PrevPegList, PrevScore, PrevBlack, PrevWhite) :-
+% Make a move based on the BEST move and get feedback
+program(play, PegList, PrevPegList, PrevScore, PrevBlack, PrevWhite, WinningBoard) :-
 	write('Give Feedback:'), nl,
 	write('Black Pegs represent correct colors and correct positions.'), nl,
 	write('White Pegs represent correct color but incorrect position.'), nl,
@@ -50,8 +53,9 @@ program(play, PegList, PrevPegList, PrevScore, PrevBlack, PrevWhite) :-
 	bestMove(Score, PrevScore, PegList, PrevPegList, Black, PrevBlack, White, PrevWhite, BestPegList, BestScore, BestBlack, BestWhite),
 	move(nmove, BestPegList, BestBlack, BestWhite, NewPegList),
 	write('Move Made.'), nl,
-	writeboard(NewPegList),
-	program(play, NewPegList, BestPegList, BestScore, BestBlack, BestWhite).
+	nl, writeboard(NewPegList),
+	write('Winning '), writeboard(WinningBoard), nl,
+	program(play, NewPegList, BestPegList, BestScore, BestBlack, BestWhite, WinningBoard).
 
 % Verify that the user selects valid peg colors
 verifyinput(W, X, Y, Z) :-
@@ -78,7 +82,7 @@ writeboard(W, X, Y, Z) :-
 
 % Print out the current board when given a list of the board
 writeboard(PegList) :-
-	write('Board: ['),
+	write('Board:         ['),
 	writepeg(PegList).
 
 % Print out a single peg at the end of the list
