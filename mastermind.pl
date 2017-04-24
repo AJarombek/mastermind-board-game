@@ -2,9 +2,7 @@
 % Date: 4/18/2017
 % Simulate the mastermind board game
 % Execute using ?- [mastermind, moves, facts].
-
-%use_module(mastermindMoves).
-%use_module(mastermindFacts).
+%				?- newgame(start).
 
 newgame(X) :- program(X).
 
@@ -33,6 +31,7 @@ program(play, PegList, WinningBoard) :-
 	read(White),
 	feedback(Black, White, Score),
 	write('The Score: '), write(Score), nl,
+	Score =\= 40,
 	move(nmove, PegList, Black, White, NewPegList),
 	write('Move Made.'), nl,
 	nl, writeboard(NewPegList),
@@ -50,6 +49,7 @@ program(play, PegList, PrevPegList, PrevScore, PrevBlack, PrevWhite, WinningBoar
 	read(White),
 	feedback(Black, White, Score),
 	write('The Score: '), write(Score), nl,
+	Score =\= 40,
 	bestMove(Score, PrevScore, PegList, PrevPegList, Black, PrevBlack, White, PrevWhite, BestPegList, BestScore, BestBlack, BestWhite),
 	move(nmove, BestPegList, BestBlack, BestWhite, NewPegList),
 	write('Move Made.'), nl,

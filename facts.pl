@@ -2,8 +2,6 @@
 % Date: 4/18/2017
 % The fact database for the mastermind game
 
-%module(mastermindFacts, [codePeg/1, matchPeg/2]).
-
 % Facts of the peg color options
 codePeg(blue).
 codePeg(green).

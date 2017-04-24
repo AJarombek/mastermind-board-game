@@ -2,8 +2,6 @@
 % Date: 4/18/2017
 % The move logic for the mastermind game
 
-%module(mastermindMoves, [move/1]).
-
 use_module(library(random)).
 use_module(library(lists)).
 %use_module(mastermindFacts).
@@ -70,6 +68,7 @@ pickbestattempt(_, _, _, _, HS) :-
 	write('List: '), write(L), nl,
 	pickbestattempt(L, S, B, W, S).
 
+% Pick this move as the best move
 bestMove(Score, PrevScore, PegList, _, Black, _, White, _, BestPegList, BestScore, BestBlack, BestWhite) :-
 	Score > PrevScore,
 	BestPegList = PegList,
@@ -77,6 +76,7 @@ bestMove(Score, PrevScore, PegList, _, Black, _, White, _, BestPegList, BestScor
 	BestBlack = Black,
 	BestWhite = White.
 
+% Pick the previous move as the best move
 bestMove(Score, PrevScore, _, PrevPegList, _, PrevBlack, _, PrevWhite, BestPegList, BestScore, BestBlack, BestWhite) :-
 	PrevScore > Score,
 	BestPegList = PrevPegList,
@@ -99,7 +99,8 @@ blackPegs([H|T], Count, BlackPegs, RemainingPegs) :-
 	append(BP, [H], BlackPegs),
 	RemainingPegs = RP.
 
-whitePegs([_|_], Count, WhitePegs) :-
+% Once all the white pegs have been chosen
+whitePegs(_, Count, WhitePegs) :-
 	Count =< 0,
 	write('White Pegs 0'), nl,
 	WhitePegs = [].
