@@ -111,3 +111,19 @@ whitePegs([H|T], Count, WhitePegs) :-
 	whitePegs(T, Count - 1, WP),
 	append(WP, [H], WhitePegs).
 
+% Stop execution on a solution
+checkscore(Score) :-
+	Score = 40,
+	nl, write('Solution Found!'), nl,
+	abort.
+
+% Continue execution when a valid non-solution score is entered
+checkscore(Score) :- 
+	Score >= 0,
+	Score < 40.
+
+% Stop execution on an invalid score
+checkscore(Score) :-
+	(Score < 0; Score > 40),
+	nl, write('ERROR: Invalid Feedback!'), nl, false,
+	abort.
