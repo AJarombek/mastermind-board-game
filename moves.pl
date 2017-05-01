@@ -4,7 +4,6 @@
 
 use_module(library(random)).
 use_module(library(lists)).
-%use_module(mastermindFacts).
 
 % Make the first move of the game, which consists of picking random pegs
 move(firstmove, PegList) :- 
@@ -56,9 +55,9 @@ feedback(Black, White, Score) :-
 	WhiteScore is White * 2,
 	Score is BlackScore + WhiteScore.
 
-% Save the move and its score as a fact
-recordmove(PegList, Score, Black, White) :-
-	assert(attempt(PegList, Score, Black, White)).
+% Save the move as a fact
+recordmove(PegList) :-
+	assert(attempt(PegList)).
 
 % Pick the attempt with the highest score
 pickbestattempt(_, _, _, _, HS) :-
@@ -70,7 +69,7 @@ pickbestattempt(_, _, _, _, HS) :-
 
 % Pick this move as the best move
 bestMove(Score, PrevScore, PegList, _, Black, _, White, _, BestPegList, BestScore, BestBlack, BestWhite) :-
-	Score > PrevScore,
+	Score >= PrevScore,
 	BestPegList = PegList,
 	BestScore = Score,
 	BestBlack = Black,
