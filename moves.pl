@@ -13,6 +13,10 @@ move(firstmove, PegList) :-
 	randomPeg(Z),
 	PegList = [W, X, Y, Z].
 
+% Make a move using the knuth algorithm
+move(knuth, NewPegList) :-
+	randomPegList(NewPegList).
+
 % Make a move of the game
 move(nmove, PegList, Black, White, NewPegList) :-
 	random_permutation([1,2,3,4], Pegs),
@@ -32,6 +36,10 @@ move(nmove, PegList, Black, White, NewPegList) :-
 randomPeg(Peg) :- 
 	random_between(0, 5, Random),
 	matchPeg(Random, Peg).
+
+% Pick a random peg list
+randomPegList(PegList) :-
+	solution(PegList).
 
 % Pick a peg if it is a member of the black peg list
 educatedPeg(N, Move, BP, _, Peg) :-
@@ -113,6 +121,48 @@ whitePegs([H|T], Count, WhitePegs) :-
 	Count > 0,
 	whitePegs(T, Count - 1, WP),
 	append(WP, [H], WhitePegs).
+
+% Narrow down solutions based on Knuth's algorithm
+narrowsolutions(PegList, Black, White) :-
+	PegList = [PW, PX, PY, PZ],
+	solution([W, X, Y, Z]),
+	analyzePeg(PW, W, [W, X, Y, Z], Black1, White1),
+	analyzePeg(PX, X, [W, X, Y, Z], Black2, White2),
+	analyzePeg(PY, Y, [W, X, Y, Z], Black3, White3),
+	analyzePeg(PZ, Z, [W, X, Y, Z], Black4, White4),
+	BlackTotal is Black1 + Black2 + Black3 + Black4,
+	WhiteTotal is White1 + White2 + White3 + White4,
+	write('Black total: '), write(BlackTotal), write(' White total: '), write(WhiteTotal), nl,
+	(BlackTotal =\= Black; WhiteTotal =\= White),
+	retract(solution([W, X, Y, Z])),
+	false.
+
+% Also retract the previous guessed solution
+narrowsolutions(PegList, _, _) :-
+	retract(solution(PegList)).
+
+% Catch-all narrowsolutions rule
+narrowsolutions(_, _, _).
+
+% Analyze a peg, matches if a black peg should be returned
+analyzePeg(PX, X, _, Black, White) :-
+	PX = X,
+	Black is 1,
+	White is 0.
+
+% Analyze a peg, matches if a white peg should be returned
+analyzePeg(PX, X, PegList, Black, White) :-
+	PX \= X,
+	member(PX, PegList),
+	Black is 0,
+	White is 1.
+
+% Analyze a peg, matches if no peg should be returned
+analyzePeg(PX, X, PegList, Black, White) :-
+	PX \= X,
+	\+ member(PX, PegList),
+	Black is 0,
+	White is 0.
 
 % Stop execution on a solution
 checkscore(Score) :-

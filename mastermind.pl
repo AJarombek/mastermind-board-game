@@ -42,7 +42,34 @@ program(knuth) :-
 	verifyinput(W, X, Y, Z), 
 	move(firstmove, PegList),
 	nl, writeboard(PegList),
-	write('Winning '), writeboard(W, X, Y, Z), nl.
+	write('Winning '), writeboard(W, X, Y, Z), nl,
+	program(knuth, [W, X, Y, Z], PegList).
+
+% Make a move with the knuth algorithm
+program(knuth, WinningBoard, PegList) :-
+	write('Give Feedback:'), nl,
+	write('Black Pegs represent correct colors and correct positions.'), nl,
+	write('White Pegs represent correct color but incorrect position.'), nl,
+	nl, write('# of Black Pegs:'), nl,
+	read(Black),
+	nl, write('# of White Pegs:'), nl,
+	read(White),
+	feedback(Black, White, Score),
+	write('The Score: '), write(Score), nl,
+	checkscore(Score),
+	narrowsolutions(PegList, Black, White),
+	write('Solutions Narrowed.'), nl,
+	countsolutions(X),
+	write('Solutions Remaining: '), write(X), nl,
+	move(knuth, NewPegList),
+	write('Move Made.'), nl,
+	nl, writeboard(NewPegList),
+	write('Winning '), writeboard(WinningBoard), nl,
+	program(knuth, WinningBoard, NewPegList).
+
+%
+% Without optimization algorithm (cont.)
+%
 
 % Make a move based on the first move and get feedback for the first time
 program(play, PegList, WinningBoard) :-
@@ -120,6 +147,3 @@ writepeg([H|T]) :-
 writepeg([H|T]) :-
 	write(H), write(', '),
 	writepeg(T).
-
-
-

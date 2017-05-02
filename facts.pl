@@ -25,7 +25,12 @@ setupfacts(_) :-
 	codePeg(Y),
 	codePeg(Z),
 	assertz(solution([W, X, Y, Z])),
-	write([W, X, Y, Z]), nl,
 	false.
 
+% Catch all for the setupfacts
 setupfacts(_).
+
+% get the number of solutions remaining
+countsolutions(X) :-
+    findall(N, solution(N), Ns),
+    length(Ns, X).
