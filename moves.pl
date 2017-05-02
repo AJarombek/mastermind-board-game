@@ -36,18 +36,21 @@ randomPeg(Peg) :-
 % Pick a peg if it is a member of the black peg list
 educatedPeg(N, Move, BP, _, Peg) :-
 	member(N, BP),
+	write(N), write(' is a member of '), write(BP), nl,
 	nth1(N, Move, Elem),
 	Peg = Elem.
 
 % Pick a peg if it is a member of the white peg list
 educatedPeg(N, Move, _, WP, Peg) :-
 	member(N, WP),
+	write(N), write(' is a member of '), write(WP), nl,
 	random_permutation(Move, [H|_]),
 	Peg = H.
 
 % Pick a random peg if it is neither a member of the white or black peg list
 educatedPeg(_, _, _, _, Peg) :-
-	randomPeg(Peg). 
+	randomPeg(Peg),
+	write('Random peg '), write(Peg), nl. 
 
 % Compute a score for a move based on user feedback
 feedback(Black, White, Score) :-

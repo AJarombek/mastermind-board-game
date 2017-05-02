@@ -2,12 +2,17 @@
 % Date: 4/18/2017
 % Simulate the mastermind board game
 % Execute using ?- [mastermind, moves, facts].
-%				?- newgame(start).
+%				?- newgame(standard).
+%				?- newgame(knuth).
 
 newgame(X) :- program(X).
 
+%
+% First attempt without optimization algorithm
+%
+
 % Start the game
-program(start) :-
+program(standard) :-
 	write('Enter the four peg colors in order for the solution.'), nl,
 	write('Options: [blue, green, orange, purple, red, yellow].'), nl,
 	read(W),
@@ -20,6 +25,24 @@ program(start) :-
 	nl, writeboard(PegList),
 	write('Winning '), writeboard(W, X, Y, Z), nl,
 	program(play, PegList, [W, X, Y, Z]).
+
+%
+% Mastermind utilizing Knuth's algorithm
+%
+
+% Start the game
+program(knuth) :-
+	setupfacts(X),
+	write('Enter the four peg colors in order for the solution.'), nl,
+	write('Options: [blue, green, orange, purple, red, yellow].'), nl,
+	read(W),
+	read(X),
+	read(Y),
+	read(Z),
+	verifyinput(W, X, Y, Z), 
+	move(firstmove, PegList),
+	nl, writeboard(PegList),
+	write('Winning '), writeboard(W, X, Y, Z), nl.
 
 % Make a move based on the first move and get feedback for the first time
 program(play, PegList, WinningBoard) :-
@@ -54,7 +77,6 @@ program(play, PegList, PrevPegList, PrevScore, PrevBlack, PrevWhite, WinningBoar
 	checkscore(Score),
 	bestMove(Score, PrevScore, PegList, PrevPegList, Black, PrevBlack, White, PrevWhite, BestPegList, BestScore, BestBlack, BestWhite),
 	move(nmove, BestPegList, BestBlack, BestWhite, NewPegList),
-	\+ attempt(NewPegList),
 	recordmove(NewPegList),
 	write('Move Made.'), nl,
 	nl, writeboard(NewPegList),
@@ -98,3 +120,6 @@ writepeg([H|T]) :-
 writepeg([H|T]) :-
 	write(H), write(', '),
 	writepeg(T).
+
+
+
